@@ -20,7 +20,7 @@ pipeline{
 
             steps{
 
-                git'https://github.com/intellipaat2/website.git'
+                git'https://github.com/Sagarraj2401/website.git'
             }
         }
         stage('docker') {
@@ -30,15 +30,15 @@ pipeline{
 
             steps {
 
-                sh 'sudo docker build /home/ubuntu/jenkins/workspace/pipeline -t amanintellipaat/project2'
+                sh 'sudo docker build /home/ubuntu/jenkins/workspace/pipeline -t sagarraj2401/devopsproject2'
                 sh 'sudo echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh 'sudo docker push amanintellipaat/project2'
+                sh 'sudo docker push sagarraj2401/devopsproject2'
 
             }
         }
-         stage('Kuberneets') {
+         stage('Kubernetes') {
             agent { 
-                label 'Kube Master'
+                label 'K8sMaster'
             }
 
             steps {

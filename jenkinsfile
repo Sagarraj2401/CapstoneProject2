@@ -1,0 +1,52 @@
+pipeline{
+    agent none
+    environment {
+        DOCKERHUB_CREDENTIALS=credentials('8d0c490d-0928-4bd7-b8e7-42e5f54bb87f')
+    }
+    stages{
+        stage('Hello'){
+            agent{ 
+                label 'K8sMaster'
+            }
+            steps{
+                echo 'Hello World'
+            }
+        }
+       
+        stage('git'){
+            agent{ 
+                label 'K8sMaster'
+            }
+
+            steps{
+
+                git'https://github.com/intellipaat2/website.git'
+            }
+        }
+        stage('docker') {
+            agent { 
+                label 'K8sMaster'
+            }
+
+            steps {
+
+                sh 'sudo docker build /home/ubuntu/jenkins/workspace/pipeline -t amanintellipaat/project2'
+                sh 'sudo echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh 'sudo docker push amanintellipaat/project2'
+
+            }
+        }
+         stage('Kuberneets') {
+            agent { 
+                label 'Kube Master'
+            }
+
+            steps {
+
+                sh ' kubectl create -f deploy.yml'
+                sh ' kubectl create -f svc.yml'
+            }
+        }
+
+    }
+}
